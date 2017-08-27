@@ -17,5 +17,11 @@ class User {
     $found = $database->fetch_array($result_set);
     return $found;
   }
+
+  public static function find_by_sql($sql = "") {
+    global $database;
+    $result_set = $database->query($sql);
+    return $result_set;
+  }
 }
 ?>
