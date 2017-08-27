@@ -6,14 +6,12 @@ require_once('database.php');
 class User {
 
   public static function find_all() {
-    global $database;
-    $result_set = $database->query("SELECT * FROM users");
-    return $result_set;
+    return self::find_by_sql("SELECT * FROM users");
   }
 
   public static function find_by_id($id = 0) {
     global $database;
-    $result_set = $database->query("SELECT * FROM users WHERE id = {$id}");
+    $result_set = self::find_by_sql("SELECT * FROM users WHERE id = {$id} LIMIT 1");
     $found = $database->fetch_array($result_set);
     return $found;
   }
