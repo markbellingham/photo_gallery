@@ -1,5 +1,5 @@
 <?php
-require_once("config.php");
+require_once(LIB_PATH.DS."config.php");
 
 class MySQLDatabase {
 
@@ -43,7 +43,7 @@ class MySQLDatabase {
     $escaped_string = mysqli_real_escape_string($this->connection, $string);
     return $escaped_string;
   }
-  
+
   public function fetch_array($result_set) {
     return mysqli_fetch_array($result_set);
   }
