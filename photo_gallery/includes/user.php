@@ -76,7 +76,16 @@ class User extends DatabaseObject {
   }
 
   public function delete() {
-
+    global $database;
+    // Don't forget your SQL syntax and good habits:
+    // - DELETE FROM table WHERE condition LIMIT 1
+    // - escape all values to prevent SQL injection
+    // - use LIMIT 1
+    $sql = "DELETE FROM users ";
+    $sql .= "WHERE id=" . $database->escape_value($this->id);
+    $sql .= " LIMIT 1";
+    $database->query($sql);
+    return ($database->affected_rows() == 1) ? true : false;
   }
 
 }

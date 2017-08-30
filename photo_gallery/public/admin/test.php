@@ -11,9 +11,12 @@ include_layout_template('admin_header.php');
 // $user->last_name = "Smith";
 // $user->create();
 
+// $user = User::find_by_id(2);
+// $user->password = "12345wxyz";
+// $user->save();
+
 $user = User::find_by_id(2);
-$user->password = "12345wxyz";
-$user->save();
+$user->delete();
 
 include_layout_template('admin_footer.php');
 ?>
