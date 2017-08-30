@@ -55,5 +55,7 @@ class DatabaseObject {
     // Will return true or false
     return array_key_exists($attribute, $object_vars);
   }
+
+
 }
 ?>
