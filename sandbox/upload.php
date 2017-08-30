@@ -11,8 +11,24 @@ $upload_errors = array(
   UPLOAD_ERR_CANT_WRITE =>  "Can't write to disk.",
   UPLOAD_ERR_EXTENSION  =>  "File upload stopped by extension."
 );
-$error = $_FILES['file_upload']['error'];
-$message = $upload_errors[$error];
+
+if(isset($_POST['submit'])) {
+  // process the form data
+  $tmp_file = $_FILES['file_upload']['tmp_name'];
+  $target_file = basename($_FILES['file_upload']['name']);
+  $upload_dir = "uploads";
+
+  // You will probably want to first use file_exists() to make sure that there isn't already a file by the same name.
+
+  // move_uploaded_file() will return false if $tmp_file is not a valid upload file or if it cannot be moved for any other reason
+  if(move_uploaded_file($tmp_file, $upload_dir."/".$target_file)) {
+    $message = "File uploaded successfully.";
+  } else {
+    $error = $_FILES['file_upload']['error'];
+    $message = $upload_errors[$error];
+  }
+}
+
 
 echo "<pre>";
 print_r($_FILES['file_upload']);
