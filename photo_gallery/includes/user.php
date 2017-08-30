@@ -33,6 +33,11 @@ class User extends DatabaseObject {
     return !empty($result_array) ? array_shift($result_array) : false;
   }
 
+  public function save() {
+    // A new record won't have an id yet
+    return isset($this->id) ? $this->update() : $this->create();
+  }
+
   public function create() {
     global $database;
     // Don't forget your SQL syntax and good habits:
@@ -55,7 +60,19 @@ class User extends DatabaseObject {
   }
 
   public function update() {
-
+    global $database;
+    // Don't forget your SQL syntax and good habits:
+    // - UPDATE table SET key = 'value', key = 'value' WHERE condition
+    // - single quotes around all values
+    // - escape all values to prevent SQL injection
+    $sql = "UPDATE users SET ";
+    $sql .= "username='" . $database->escape_value($this->username) . "', ";
+    $sql .= "password='" . $database->escape_value($this->password) . "', ";
+    $sql .= "first_name='" . $database->escape_value($this->first_name) . "', ";
+    $sql .= "last_name='" . $database->escape_value($this->last_name) . "'";
+    $sql .= " WHERE id=" . $database->escape_value($this->id);
+    $database->query($sql);
+    return ($database->affected_rows() == 1) ? true : false;
   }
 
   public function delete() {
