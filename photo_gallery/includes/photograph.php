@@ -52,5 +52,57 @@ class Photograph extends DatabaseObject {
     }
   }
 
+  public function save() {
+    // A new record won't have an id yet.
+    if(isset($this->id)) {
+      // Really just to update the caption.
+      $this->update();
+    } else {
+      // Make sure there are no errors
+
+      // Can't save if there are pre-existing errors
+      if(!empty($this->caption)) { return false; }
+
+      // Make sure that the caption is not too long for the database
+      if(strlen($this->caption) <= 255) {
+        $this->errors[] = "The caption cannot be longer than 255 characters";
+        return false;
+      }
+
+      // Can't save without filename and temp location
+      if(empty($this->filename) || empty($this->temp_path)) {
+        $this->errors[] = "the file location was not available.";
+        return false;
+      }
+
+      // Determine the target_path
+      $target_path = SITE_ROOT.DS.'public'.DS.$this->upload_dir.DS.$this->filename;
+
+      // Make sure a file does not already exist in the target location
+      if(file_exists($target_path)) {
+        $this->errors[] = "The file {$this->filename} already exists.";
+        return false;
+      }
+
+      // Attempt to move the file
+      if(move_uploaded_file($this->temp_path, $target_path)) {
+        // Success
+        // Save a corresponding entry to the database
+        if($this->create()) {
+          // We are done with the temp_path, the file isn't there anymore
+          unset($this->temp_path);
+          return true;
+        }
+      } else {
+        // File was not moved
+        $this->errors[] = "The file upload failed, possibly due to incorrect permissions on the upload folder.";
+        return false;
+      }
+
+      // Save a corresponding entry to the database
+      $this->create();
+    }
+  }
+
 }
 ?>
