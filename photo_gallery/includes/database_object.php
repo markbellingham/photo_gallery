@@ -51,6 +51,8 @@ class DatabaseObject {
     // get_object_vars returns as associative array with all attributes
     // (incl. private ones!) as the keys and their current values as the value
     $object_vars = get_object_vars($this);
+    // $object_vars = $this->attributes();
+    
     // We don't care about the value, we just want to know if the key exists
     // Will return true or false
     return array_key_exists($attribute, $object_vars);
