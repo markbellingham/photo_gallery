@@ -6,6 +6,8 @@ require_once(LIB_PATH.DS.'database.php');
 class User extends DatabaseObject {
 
   protected static $table_name = "users";
+  protected static $db_fields = array('id', 'username', 'password', 'first_name', 'last_name');
+
   public $id;
   public $username;
   public $password;
@@ -35,7 +37,13 @@ class User extends DatabaseObject {
 
   protected function attributes() {
     // return an array of attribute keys and their values
-    return get_object_vars($this);
+    $attributes = array();
+    foreach(self::$db_fields as $field) {
+      if(property_exists($this, $field)) {
+        $attributes[$field] = $this->$field;
+      }
+      return $attributes;
+    }
   }
 
   protected function sanitised_attributes() {
