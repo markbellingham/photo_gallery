@@ -18,6 +18,7 @@ include_layout_template('admin_header.php');
     <th>Caption</th>
     <th>Size</th>
     <th>Type</th>
+    <th>Comments</th>
     <th>&nbsp</th>
   </tr>
   <?php foreach($photos as $photo): ?>
@@ -27,6 +28,11 @@ include_layout_template('admin_header.php');
     <td><?php echo $photo->caption; ?></td>
     <td><?php echo $photo->size_as_text(); ?></td>
     <td><?php echo $photo->type; ?></td>
+    <td>
+      <a href="comments.php?id=<?php echo $photo->id; ?>">
+        <?php echo count($photo->comments()); ?>
+      </a>
+    </td>
     <td><a href="delete_photo.php?id=<?php echo $photo->id; ?>">Delete</a></td>
   </tr>
 <?php endforeach; ?>
