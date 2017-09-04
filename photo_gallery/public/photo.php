@@ -35,6 +35,8 @@ if(isset($_POST['submit'])) {
   $body = "";
 }
 
+$comments = $photo->comments();
+
 include_layout_template('header.php');
 ?>
 <a href="index.php">&laquo; Back</a><br />
@@ -46,6 +48,23 @@ include_layout_template('header.php');
 </div>
 
 <!-- list comments -->
+<div id="comments">
+  <?php foreach($comments as $comment): ?>
+    <div class="comment" style="margin-bottom: 2em;">
+      <div class="author">
+        <?php echo htmlentities($comment->author); ?> wrote:
+      </div> <!-- ends author -->
+      <div class="body">
+        <?php echo strip_tags($comment->body, '<strong><em><p>'); ?>
+      </div> <!-- ends body -->
+      <div class="meta-info" style="font-size: 0.8em;">
+        <?php echo datetime_to_text($comment->created); ?>
+      </div> <!-- ends meta-info -->
+    </div> <!-- ends comment -->
+  <?php endforeach; ?>
+  <?php if(empty($comments)) { echo "No comments."; } ?>
+</div> <!-- ends comments -->
+
 <div id="comment-form">
   <h3>New Comment</h3>
   <?php echo output_message($message); ?>
