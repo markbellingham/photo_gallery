@@ -10,6 +10,7 @@ include_layout_template('admin_header.php');
 
 <h2>Photographs</h2>
 
+<?php echo output_message($message); ?>
 <table class="bordered">
   <tr>
     <th>Image</th>

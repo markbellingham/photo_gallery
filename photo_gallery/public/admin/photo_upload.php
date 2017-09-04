@@ -4,7 +4,6 @@ if (!$session->is_logged_in()) { redirect_to("login.php"); }
 
 $max_file_size = 1048576;
 
-$message = "";
 if(isset($_POST['submit'])) {
   $photo = new Photograph();
   $photo->caption = $_POST['caption'];
@@ -12,7 +11,8 @@ if(isset($_POST['submit'])) {
 
   if($photo->save()) {
     // Success
-    $message = "Photograph uploaded successfully.";
+    $session->message("Photograph uploaded successfully.");
+    redirect_to('list_photos.php');
   } else {
     // Failure
     $message = join("<br />", $photo->errors);
