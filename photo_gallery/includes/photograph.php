@@ -1,10 +1,10 @@
 <?php
-// If it's going to need the database, then it's 
+// If it's going to need the database, then it's
 // probably smart to require it before we start.
 require_once(LIB_PATH.DS.'database.php');
 
 class Photograph extends DatabaseObject {
-	
+
 	protected static $table_name="photographs";
 	protected static $db_fields=array('id', 'filename', 'type', 'size', 'caption');
 	public $id;
@@ -12,11 +12,11 @@ class Photograph extends DatabaseObject {
 	public $type;
 	public $size;
 	public $caption;
-	
+
 	private $temp_path;
   protected $upload_dir="images";
   public $errors=array();
-  
+
   protected $upload_errors = array(
 		// http://www.php.net/manual/en/features.file-upload.errors.php
 		UPLOAD_ERR_OK 				=> "No errors.",
@@ -51,7 +51,7 @@ class Photograph extends DatabaseObject {
 
 		}
 	}
-  
+
 	public function save() {
 		// A new record won't have an id yet.
 		if(isset($this->id)) {
@@ -59,32 +59,32 @@ class Photograph extends DatabaseObject {
 			$this->update();
 		} else {
 			// Make sure there are no errors
-			
+
 			// Can't save if there are pre-existing errors
 		  if(!empty($this->errors)) { return false; }
-		  
+
 			// Make sure the caption is not too long for the DB
 		  if(strlen($this->caption) > 255) {
 				$this->errors[] = "The caption can only be 255 characters long.";
 				return false;
 			}
-		
+
 		  // Can't save without filename and temp location
 		  if(empty($this->filename) || empty($this->temp_path)) {
 		    $this->errors[] = "The file location was not available.";
 		    return false;
 		  }
-			
+
 			// Determine the target_path
 		  $target_path = SITE_ROOT .DS. 'public' .DS. $this->upload_dir .DS. $this->filename;
-		  
+
 		  // Make sure a file doesn't already exist in the target location
 		  if(file_exists($target_path)) {
 		    $this->errors[] = "The file {$this->filename} already exists.";
 		    return false;
 		  }
-		
-			// Attempt to move the file 
+
+			// Attempt to move the file
 			if(move_uploaded_file($this->temp_path, $target_path)) {
 		  	// Success
 				// Save a corresponding entry to the database
@@ -100,18 +100,34 @@ class Photograph extends DatabaseObject {
 			}
 		}
 	}
-	
-	
+
+  public function image_path() {
+    return $this->upload_dir.DS.$this->filename;
+  }
+
+  public function size_as_text() {
+    if ($this->size < 1024) {
+      return "{$this->size} bytes";
+    } elseif ($this->size < 1048576) {
+      $size_kb = round($this->size/1024);
+      return "{$size_kb} KB";
+    } else {
+      $size_mb = round($this->size/1048576, 1);
+      return "{$size_mb} MB";
+    }
+  }
+
+
 	// Common Database Methods
 	public static function find_all() {
 		return self::find_by_sql("SELECT * FROM ".self::$table_name);
   }
-  
+
   public static function find_by_id($id=0) {
     $result_array = self::find_by_sql("SELECT * FROM ".self::$table_name." WHERE id={$id} LIMIT 1");
 		return !empty($result_array) ? array_shift($result_array) : false;
   }
-  
+
   public static function find_by_sql($sql="") {
     global $database;
     $result_set = $database->query($sql);
@@ -131,7 +147,7 @@ class Photograph extends DatabaseObject {
 		// $object->password 	= $record['password'];
 		// $object->first_name = $record['first_name'];
 		// $object->last_name 	= $record['last_name'];
-		
+
 		// More dynamic, short-form approach:
 		foreach($record as $attribute=>$value){
 		  if($object->has_attribute($attribute)) {
@@ -140,14 +156,14 @@ class Photograph extends DatabaseObject {
 		}
 		return $object;
 	}
-	
+
 	private function has_attribute($attribute) {
 	  // We don't care about the value, we just want to know if the key exists
 	  // Will return true or false
 	  return array_key_exists($attribute, $this->attributes());
 	}
 
-	protected function attributes() { 
+	protected function attributes() {
 		// return an array of attribute names and their values
 	  $attributes = array();
 	  foreach(self::$db_fields as $field) {
@@ -157,7 +173,7 @@ class Photograph extends DatabaseObject {
 	  }
 	  return $attributes;
 	}
-	
+
 	protected function sanitized_attributes() {
 	  global $database;
 	  $clean_attributes = array();
@@ -168,13 +184,13 @@ class Photograph extends DatabaseObject {
 	  }
 	  return $clean_attributes;
 	}
-	
+
 	// replaced with a custom save()
 	// public function save() {
 	//   // A new record won't have an id yet.
 	//   return isset($this->id) ? $this->update() : $this->create();
 	// }
-	
+
 	public function create() {
 		global $database;
 		// Don't forget your SQL syntax and good habits:
@@ -224,12 +240,12 @@ class Photograph extends DatabaseObject {
 	  $sql .= " LIMIT 1";
 	  $database->query($sql);
 	  return ($database->affected_rows() == 1) ? true : false;
-	
-		// NB: After deleting, the instance of User still 
+
+		// NB: After deleting, the instance of User still
 		// exists, even though the database entry does not.
 		// This can be useful, as in:
 		//   echo $user->first_name . " was deleted";
-		// but, for example, we can't call $user->update() 
+		// but, for example, we can't call $user->update()
 		// after calling $user->delete().
 	}
 
