@@ -23,17 +23,16 @@ if(isset($_POST['submit'])) {
   // move_uploaded_file() will return false if $tmp_file is not a valid upload file or if it cannot be moved for any other reason
   if(move_uploaded_file($tmp_file, $upload_dir."/".$target_file)) {
     $message = "File uploaded successfully.";
+    echo "<pre>";
+    print_r($_FILES['file_upload']);
+    echo "</pre>";
+    echo "<hr />";
   } else {
     $error = $_FILES['file_upload']['error'];
     $message = $upload_errors[$error];
   }
 }
 
-
-echo "<pre>";
-print_r($_FILES['file_upload']);
-echo "</pre>";
-echo "<hr />";
 ?>
 
 <html>
