@@ -16,3 +16,11 @@ CREATE TABLE photographs (
   size INT(11) NOT NULL,
   caption VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE comments (
+  id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  photograph_id INT(11) NOT NULL,
+  created DATETIME NOT NULL,
+  author VARCHAR(255) NOT NULL,
+  body TEXT NOT NULL
+);
