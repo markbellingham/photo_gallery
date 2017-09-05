@@ -35,5 +35,34 @@ class Comment extends DatabaseObject {
     return self::find_by_sql($sql);
   }
 
+  public function try_to_send_notification() {
+    $mail = new PHPMailer();
+
+    $mail->IsSMTP();
+    $mail->Host     = "your.host.com";
+    $mail->Port     = 25;
+    $mail->SMTPAuth = false;
+    $mail->Username = "your_username";
+    $mail->Password = "your_password";
+
+    $mail->FromName = "Photo Gallery";
+    $mail->From     = "photo_gallery@markbellingham.me";
+    $mail->AddAddress("mark_b@tuta.io", "Photo Gallery Admin");
+    $mail->Subject  = "New Photo Gallery Comment";
+    $created = datetime_to_text($this->created);
+    $mail->Body     =<<<EMAILBODY
+
+A new comment has been received in the Photo Gallery.
+
+  At {$this->created}, {$this->author} wrote:
+
+{$this->body}
+
+EMAILBODY;
+
+    $result = $mail->Send();
+    return $result;
+  }
+
 }
 ?>

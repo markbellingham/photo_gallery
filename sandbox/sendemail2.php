@@ -13,12 +13,12 @@ $from = "mark@markbellingham.me";
 // PHP SMTP version
 $mail = new PHPMailer();
 
-// $mail->IsSMTP();
-// $mail->Host     = "your.host.com";
-// $mail->Port     = 25;
-// $mail->SMTPAuth = false;
-// $mail->Username = "your_username";
-// $mail->Password = "your_password";
+$mail->IsSMTP();
+$mail->Host     = "your.host.com";
+$mail->Port     = 25;
+$mail->SMTPAuth = false;
+$mail->Username = "your_username";
+$mail->Password = "your_password";
 
 $mail->FromName = $from_name;
 $mail->From     = $from;
