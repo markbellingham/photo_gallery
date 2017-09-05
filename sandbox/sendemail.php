@@ -16,8 +16,14 @@ $message = "This is a test.";
 // wrap at 70/72/75/78
 $message = wordwrap($message,70);
 
-$from = "mark@markbellingham.me";
-$headers = "From: {$from}";
+$from = "Mark Bellingham <mark@markbellingham.me>";
+$headers = "From: {$from}\n";
+$headers .= "Reply-To: {$from}\n";
+// $headers .= "Cc: {$to}\n";
+// $headers .= "Bcc: {$to}\n";
+$headers .= "X-Mailer: PHP/" . phpversion() . "\n";
+$headers .= "MIME-Version: 1.0\n";
+$headers .= "Content-Type: text/plain; charset=iso-8859-1";
 
 $result = mail($to, $subject, $message, $headers);
 echo $result ? 'Sent' : 'Error';
