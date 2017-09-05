@@ -27,7 +27,7 @@ class DatabaseObject {
     return $object_array;
   }
 
-  public static function caount_all() {
+  public static function count_all() {
     global $database;
     $sql = "SELECT COUNT(*) FROM ".static::$table_name;
     $result_set = $database->query($sql);

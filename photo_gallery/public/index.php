@@ -12,7 +12,16 @@ $total_count = Photograph::count_all();
 
 
 // Find all photos
-$photos = Photograph::find_all();
+// Use pagination instead
+// $photos = Photograph::find_all();
+
+$pagination = new Pagination($page, $per_page, $total_count);
+
+// Instead of finding all records, just find the records for this page
+$sql  = "SELECT * FROM photographs ";
+$sql .= "LIMIT {$per_page} ";
+$sql .= "OFFSET {$pagination->offset()}";
+$photos = Photograph::find_by_sql($sql);
 
 include_layout_template('header.php');
 
